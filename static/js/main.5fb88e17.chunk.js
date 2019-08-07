@@ -1,2 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[0],{10:function(e,n,t){"use strict";t.r(n);var a=t(0),o=t.n(a),c=t(2),r=t.n(c),l=(t(9),function(){return o.a.createElement("div",{className:"App"},o.a.createElement("h1",null,"Phone catalog"))});r.a.render(o.a.createElement(l,null),document.getElementById("root"))},3:function(e,n,t){e.exports=t(10)},9:function(e,n,t){}},[[3,1,2]]]);
-//# sourceMappingURL=main.5fb88e17.chunk.js.map
