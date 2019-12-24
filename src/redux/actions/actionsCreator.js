@@ -23,8 +23,3 @@ export const getPhonesThunk = () => async(dispatch) => {
   dispatch(changeIsLoading(false));
   dispatch(changeIsLoaded(true));
 };
-
-// export const set_movies_thunk = () => async dispatch => {
-//   const phones = await api.get_all_movies();
-//   dispatch(set_movies(phones));
-// };

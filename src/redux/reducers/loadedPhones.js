@@ -1,7 +1,7 @@
 export const loadedPhones = (state = [], action) => {
   switch (action.type) {
     case 'DOWNLOAD_PHONES':
-      return [...state, action.phones];
+      return [...action.phones];
     default:
       return state;
   }

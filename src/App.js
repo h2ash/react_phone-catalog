@@ -1,24 +1,21 @@
 import React from 'react';
 import './styles/app.scss';
 import { Route, Switch } from 'react-router-dom';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 // eslint-disable-next-line max-len
-import { changeIsLoading, changeIsLoaded, downloadPhones, getPhonesThunk } from './redux/actions/actionsCreator';
+import { changeIsLoading, changeIsLoaded, getPhonesThunk } from './redux/actions/actionsCreator';
 import Navbar from './components/Navbar/Navbar';
 import Index from './pages/index';
 import LoaderOfPhones from './pages/phones/loaderOfPhones';
 import Page404 from './pages/Page404/Page404';
 import LoaderForPhone from './pages/phone/loaderForPhone';
 import Basket from './pages/basket/basket';
-import { BASE_URL } from './lib/constants';
 import Footer from './components/Footer/Footer';
 import Rights from './pages/rights/rights';
 
 class App extends React.Component {
   state = {
-    phones: [],
-    isLoading: false,
-    isLoaded: false,
     itemsInBasket: [],
   };
 
@@ -99,31 +96,15 @@ class App extends React.Component {
   };
 
   loadDataPhones = async() => {
-    // this.props.changeIsLoaded(false);
-    // this.props.changeIsLoading(true);
+    this.props.changeIsLoaded(false);
+    this.props.changeIsLoading(true);
 
-    // this.props.getPhonesThunk();
-
-
-    this.setState({
-      isLoaded: false,
-      isLoading: true,
-    });
-
-    const responsePhones = await fetch(`${BASE_URL}/api/phones.json`);
-    const phones = await responsePhones.json();
-
-    this.setState({
-      phones,
-      isLoading: false,
-      isLoaded: true,
-    });
+    this.props.getPhonesThunk();
   };
 
   render() {
-    // eslint-disable-next-line object-curly-newline
-    const { phones, isLoading, isLoaded, itemsInBasket } = this.state;
-    // const { phones } = this.props;
+    const { itemsInBasket } = this.state;
+    const { loadingStatus, loadedPhones } = this.props;
 
     return (
       <div className="app">
@@ -138,9 +119,9 @@ class App extends React.Component {
               <LoaderOfPhones
                 addItemToBasket={this.addItemToBasket}
                 loadDataPhones={this.loadDataPhones}
-                phones={phones}
-                isLoading={isLoading}
-                isLoaded={isLoaded}
+                phones={loadedPhones}
+                isLoading={loadingStatus.isLoading}
+                isLoaded={loadingStatus.isLoaded}
                 location={location}
                 history={history}
                 itemsInBasket={itemsInBasket}
@@ -152,7 +133,7 @@ class App extends React.Component {
             render={({ match }) => (
               <LoaderForPhone
                 id={match.params.id}
-                phones={phones}
+                phones={loadedPhones}
                 itemsInBasket={itemsInBasket}
                 addItemToBasket={this.addItemToBasket}
                 loadDataPhones={this.loadDataPhones}
@@ -178,8 +159,25 @@ class App extends React.Component {
   }
 }
 
+App.propTypes = {
+  changeIsLoaded: PropTypes.func.isRequired,
+  changeIsLoading: PropTypes.func.isRequired,
+  getPhonesThunk: PropTypes.func.isRequired,
+  loadedPhones: PropTypes.arrayOf(PropTypes.shape({
+    age: PropTypes.number,
+    id: PropTypes.string,
+    imageURL: PropTypes.string,
+    name: PropTypes.string,
+    snippet: PropTypes.string,
+  })).isRequired,
+  loadingStatus: PropTypes.shape({
+    isLoading: PropTypes.bool,
+    isLoaded: PropTypes.bool,
+  }).isRequired,
+};
+
 export default connect(({ loadingStatus, loadedPhones }) => ({
   loadingStatus, loadedPhones,
 }), {
-  changeIsLoading, changeIsLoaded, downloadPhones, getPhonesThunk,
+  changeIsLoading, changeIsLoaded, getPhonesThunk,
 })(App);
