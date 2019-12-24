@@ -1,6 +1,9 @@
 import React from 'react';
 import './styles/app.scss';
 import { Route, Switch } from 'react-router-dom';
+import { connect } from 'react-redux';
+// eslint-disable-next-line max-len
+import { changeIsLoading, changeIsLoaded, downloadPhones, getPhonesThunk } from './redux/actions/actionsCreator';
 import Navbar from './components/Navbar/Navbar';
 import Index from './pages/index';
 import LoaderOfPhones from './pages/phones/loaderOfPhones';
@@ -96,6 +99,12 @@ class App extends React.Component {
   };
 
   loadDataPhones = async() => {
+    // this.props.changeIsLoaded(false);
+    // this.props.changeIsLoading(true);
+
+    // this.props.getPhonesThunk();
+
+
     this.setState({
       isLoaded: false,
       isLoading: true,
@@ -114,6 +123,7 @@ class App extends React.Component {
   render() {
     // eslint-disable-next-line object-curly-newline
     const { phones, isLoading, isLoaded, itemsInBasket } = this.state;
+    // const { phones } = this.props;
 
     return (
       <div className="app">
@@ -168,4 +178,8 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default connect(({ loadingStatus, loadedPhones }) => ({
+  loadingStatus, loadedPhones,
+}), {
+  changeIsLoading, changeIsLoaded, downloadPhones, getPhonesThunk,
+})(App);
