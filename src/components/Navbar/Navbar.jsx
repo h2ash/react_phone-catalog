@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { GIT_HUB_H2ASH } from '../../lib/constants';
 
 const Navbar = ({ itemsInBasket }) => (
@@ -68,4 +69,8 @@ Navbar.propTypes = {
   itemsInBasket: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-export default Navbar;
+export default connect(({
+  itemsInBasket,
+}) => ({
+  itemsInBasket,
+}))(Navbar);

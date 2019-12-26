@@ -2,9 +2,20 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { connect } from 'react-redux';
 import { BASE_URL } from '../../lib/constants';
+import {
+  increaseItemInBasket,
+  decreaseItemInBasket,
+  deleteItemFromBasket,
+} from '../../redux/actions/actionsCreator';
 
-const PhoneInBasket = ({ item, basketManager }) => {
+const PhoneInBasket = ({
+  item,
+  increaseItemInBasket,
+  decreaseItemInBasket,
+  deleteItemFromBasket,
+}) => {
   const checkDisabledOrActive = classNames({
     'button--decrease-increase-disabled': item.quantity <= 1,
     'button--decrease-increase-active': item.quantity > 1,
@@ -36,7 +47,7 @@ const PhoneInBasket = ({ item, basketManager }) => {
       </div>
       <div className="basket-card__buttons-container">
         <button
-          onClick={() => basketManager(item.id, 'decrease')}
+          onClick={() => decreaseItemInBasket(item.id)}
           className={`
             button button--decrease-increase 
             ${checkDisabledOrActive}`}
@@ -46,7 +57,7 @@ const PhoneInBasket = ({ item, basketManager }) => {
         </button>
         <p className="basket-card__quantity-of-phone">{item.quantity}</p>
         <button
-          onClick={() => basketManager(item.id, 'increase')}
+          onClick={() => increaseItemInBasket(item.id)}
           className="
             basket-card__increase-button
             button
@@ -57,7 +68,7 @@ const PhoneInBasket = ({ item, basketManager }) => {
           +
         </button>
         <button
-          onClick={() => basketManager(item.id, 'remove')}
+          onClick={() => deleteItemFromBasket(item.id)}
           className="button button--remove"
           type="button"
         >
@@ -79,4 +90,12 @@ PhoneInBasket.propTypes = {
   basketManager: PropTypes.func.isRequired,
 };
 
-export default PhoneInBasket;
+export default connect(({
+  itemsInBasket,
+}) => ({
+  itemsInBasket,
+}), {
+  increaseItemInBasket,
+  decreaseItemInBasket,
+  deleteItemFromBasket,
+})(PhoneInBasket);

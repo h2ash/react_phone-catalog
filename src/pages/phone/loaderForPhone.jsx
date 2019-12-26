@@ -43,8 +43,6 @@ class LoaderForPhone extends React.Component {
     const {
       id,
       phones,
-      itemsInBasket,
-      addItemToBasket,
     } = this.props;
     const {
       detailsOfCurrentPhone,
@@ -76,8 +74,6 @@ class LoaderForPhone extends React.Component {
                         <Phone
                           id={id}
                           phone={phone}
-                          itemsInBasket={itemsInBasket}
-                          addItemToBasket={addItemToBasket}
                           key={phone.id}
                           detailsOfCurrentPhone={detailsOfCurrentPhone}
                         />

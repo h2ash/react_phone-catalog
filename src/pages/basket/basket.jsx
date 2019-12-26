@@ -1,9 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { clearBasket } from '../../redux/actions/actionsCreator';
 import PhoneInBasket from '../../components/PhoneInBasket/PhoneInBasket';
 
-const Basket = ({ itemsInBasket, basketManager }) => (
+const Basket = ({
+  itemsInBasket,
+  clearBasket,
+}) => (
   <main className="wrapper__main basket">
     <h2 className="heading heading--m basket__quantity-of-phones">
       Chosen phones:
@@ -19,14 +24,13 @@ const Basket = ({ itemsInBasket, basketManager }) => (
                   <PhoneInBasket
                     key={item.id}
                     item={item}
-                    basketManager={basketManager}
                   />
                 ))
               }
             </ul>
             <div className="basket__buttons">
               <button
-                onClick={() => basketManager(0, 'removeAll')}
+                onClick={() => clearBasket()}
                 className="button button--delete-items"
                 type="button"
               >
@@ -66,4 +70,10 @@ Basket.propTypes = {
   basketManager: PropTypes.func.isRequired,
 };
 
-export default Basket;
+export default connect(({
+  itemsInBasket,
+}) => ({
+  itemsInBasket,
+}), ({
+  clearBasket,
+}))(Basket);

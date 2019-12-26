@@ -7,10 +7,8 @@ const LoaderOfPhones = ({
   phones,
   isLoading,
   isLoaded,
-  addItemToBasket,
   location,
   history,
-  itemsInBasket,
   loadDataPhones,
 }) => {
   useEffect(() => {
@@ -23,13 +21,12 @@ const LoaderOfPhones = ({
         isLoaded
           ? (
             <Phones
-              addItemToBasket={addItemToBasket}
               phones={phones}
               isLoading={isLoading}
               isLoaded={isLoaded}
               location={location}
               history={history}
-              itemsInBasket={itemsInBasket}
+
             />
           )
           : (

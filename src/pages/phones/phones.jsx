@@ -4,6 +4,8 @@ import {
   Link,
 } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { addItemToBasket } from '../../redux/actions/actionsCreator';
 import { BASE_URL } from '../../lib/constants';
 import PaginationButtons from '../../components/Pagination/PaginationButtons';
 import PaginationInfo from '../../components/Pagination/PaginationInfo';
@@ -344,4 +346,10 @@ Phones.propTypes = {
   })).isRequired,
 };
 
-export default Phones;
+export default connect(({
+  itemsInBasket,
+}) => ({
+  itemsInBasket,
+}), ({
+  addItemToBasket,
+}))(Phones);

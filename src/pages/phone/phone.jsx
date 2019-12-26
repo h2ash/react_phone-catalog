@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { addItemToBasket } from '../../redux/actions/actionsCreator';
 import { BASE_URL } from '../../lib/constants';
 import CheckMark from '../../components/CheckMark';
 
@@ -255,4 +257,10 @@ Phone.propTypes = {
   id: PropTypes.string.isRequired,
 };
 
-export default Phone;
+export default connect(({
+  itemsInBasket,
+}) => ({
+  itemsInBasket,
+}), {
+  addItemToBasket,
+})(Phone);
