@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -87,7 +88,9 @@ PhoneInBasket.propTypes = {
     name: PropTypes.string,
     snippet: PropTypes.string,
   }).isRequired,
-  basketManager: PropTypes.func.isRequired,
+  increaseItemInBasket: PropTypes.func.isRequired,
+  decreaseItemInBasket: PropTypes.func.isRequired,
+  deleteItemFromBasket: PropTypes.func.isRequired,
 };
 
 export default connect(({

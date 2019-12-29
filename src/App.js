@@ -28,17 +28,13 @@ class App extends React.Component {
     );
 
     if (itemsFromBasketInLocal !== null) {
-      
-      // this.props.phonesFromStorage(itemsFromBasketInLocal); 
+
+      // this.props.phonesFromStorage(itemsFromBasketInLocal);
       // this.setState({
       //   itemsInBasket: itemsFromBasketInLocal,
       // });
     }
   }
-
-  loadDataPhones = async() => {
-    this.props.getPhonesThunk();
-  };
 
   render() {
     const {
@@ -57,7 +53,7 @@ class App extends React.Component {
             exact
             render={({ location, history }) => (
               <LoaderOfPhones
-                loadDataPhones={this.loadDataPhones}
+                getPhonesThunk={this.props.getPhonesThunk}
                 phones={loadedPhones}
                 isLoading={loadingStatus.isLoading}
                 isLoaded={loadingStatus.isLoaded}
@@ -72,7 +68,7 @@ class App extends React.Component {
               <LoaderForPhone
                 id={match.params.id}
                 phones={loadedPhones}
-                loadDataPhones={this.loadDataPhones}
+                getPhonesThunk={this.props.getPhonesThunk}
               />
             )}
           />

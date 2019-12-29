@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
@@ -67,7 +68,7 @@ Basket.propTypes = {
     name: PropTypes.string,
     snippet: PropTypes.string,
   })).isRequired,
-  basketManager: PropTypes.func.isRequired,
+  clearBasket: PropTypes.func.isRequired,
 };
 
 export default connect(({

@@ -7,6 +7,7 @@ import {
   CLEAR_BASKET,
 } from '../../lib/constants';
 
+// eslint-disable-next-line consistent-return
 export const itemsInBasket = (state = [], action) => {
   switch (action.type) {
     // case PHONES_FROM_STORAGE:
@@ -24,7 +25,7 @@ export const itemsInBasket = (state = [], action) => {
         return [...state, requiredItem];
       }
 
-      break;
+      return state;
     }
 
     case INCREASE_QUANTITY_IN_BASKET:

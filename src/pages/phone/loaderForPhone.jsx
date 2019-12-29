@@ -13,7 +13,7 @@ class LoaderForPhone extends React.Component {
   }
 
   componentDidMount = () => {
-    this.props.loadDataPhones();
+    this.props.getPhonesThunk();
     this.loadDataDetails(this.props.id);
   };
 
@@ -98,9 +98,7 @@ class LoaderForPhone extends React.Component {
 LoaderForPhone.propTypes = {
   id: PropTypes.string.isRequired,
   phones: PropTypes.arrayOf(PropTypes.object).isRequired,
-  loadDataPhones: PropTypes.func.isRequired,
-  addItemToBasket: PropTypes.func.isRequired,
-  itemsInBasket: PropTypes.arrayOf(PropTypes.object).isRequired,
+  getPhonesThunk: PropTypes.func.isRequired,
 };
 
 export default LoaderForPhone;

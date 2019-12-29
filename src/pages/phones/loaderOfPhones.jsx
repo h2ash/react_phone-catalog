@@ -9,11 +9,11 @@ const LoaderOfPhones = ({
   isLoaded,
   location,
   history,
-  loadDataPhones,
+  getPhonesThunk,
 }) => {
   useEffect(() => {
-    loadDataPhones();
-  }, [loadDataPhones]);
+    getPhonesThunk();
+  }, [getPhonesThunk]);
 
   return (
     <main className="wrapper__main">
@@ -40,7 +40,7 @@ const LoaderOfPhones = ({
 };
 
 LoaderOfPhones.propTypes = {
-  loadDataPhones: PropTypes.func.isRequired,
+  getPhonesThunk: PropTypes.func.isRequired,
   isLoading: PropTypes.bool.isRequired,
   isLoaded: PropTypes.bool.isRequired,
   phones: PropTypes.arrayOf(PropTypes.shape({
@@ -50,20 +50,12 @@ LoaderOfPhones.propTypes = {
     name: PropTypes.string,
     snippet: PropTypes.string,
   })).isRequired,
-  addItemToBasket: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,
   location: PropTypes.shape({
     search: PropTypes.string,
   }).isRequired,
-  itemsInBasket: PropTypes.arrayOf(PropTypes.shape({
-    age: PropTypes.number,
-    id: PropTypes.string,
-    imageURL: PropTypes.string,
-    name: PropTypes.string,
-    snippet: PropTypes.string,
-  })).isRequired,
 };
 
 export default LoaderOfPhones;
