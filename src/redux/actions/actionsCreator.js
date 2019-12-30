@@ -67,18 +67,18 @@ export const getPhonesThunk = () => async(dispatch) => {
   dispatch(changeIsLoaded(true));
 };
 
-export const addItemToBasketThunk = data => async(
+export const addItemToBasketThunk = phone => async(
   dispatch,
   getState,
 ) => {
   const { itemsInBasket } = getState();
 
   const currentIndex = itemsInBasket.findIndex(
-    element => element.id === data.id
+    element => element.id === phone.id
   );
 
   if (currentIndex < 0) {
-    const requiredItem = { ...data };
+    const requiredItem = { ...phone };
 
     requiredItem.quantity = 1;
 

@@ -1,4 +1,5 @@
-import React from 'react';
+/* eslint-disable no-shadow */
+import React, { useEffect } from 'react';
 import './styles/app.scss';
 import {
   Route,
@@ -7,8 +8,6 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  changeIsLoading,
-  changeIsLoaded,
   phonesFromStorage,
   getPhonesThunk,
 } from './redux/actions/actionsCreator';
@@ -21,87 +20,66 @@ import Basket from './pages/basket/basket';
 import Footer from './components/Footer/Footer';
 import Rights from './pages/rights/rights';
 
-// const App = ({
-//   loadingStatus,
-//   loadedPhones,
-//   phonesFromStorage,
-//   getPhonesThunk,
-//   basketManagerAndSetLocalStorageThunk,
-// }) => {
-//   useEffect(() => {
-//     const itemsFromBasketInLocal = JSON.parse(
-//       window.localStorage.getItem('itemsFromBasketInLocal')
-//     );
-
-//     if (itemsFromBasketInLocal !== null) {
-//       phonesFromStorage(itemsFromBasketInLocal);
-//     }
-//   }, [phonesFromStorage]);
-
-class App extends React.Component {
-  componentDidMount() {
+const App = ({
+  loadingStatus,
+  loadedPhones,
+  phonesFromStorage,
+  getPhonesThunk,
+}) => {
+  useEffect(() => {
     const itemsFromBasketInLocal = JSON.parse(
       localStorage.getItem('itemsFromBasketInLocal')
     );
 
     if (itemsFromBasketInLocal !== null) {
-      this.props.phonesFromStorage(itemsFromBasketInLocal);
+      phonesFromStorage(itemsFromBasketInLocal);
     }
-  }
+  }, []);
 
-  render() {
-    const {
-      loadingStatus,
-      loadedPhones,
-      // eslint-disable-next-line no-shadow
-      getPhonesThunk,
-    } = this.props;
+  return (
+    <div className="app">
+      <Navbar />
 
-    return (
-      <div className="app">
-        <Navbar />
+      <Switch>
+        <Route path="/" exact component={Index} />
+        <Route
+          path="/phones"
+          exact
+          render={({ location, history }) => (
+            <LoaderOfPhones
+              getPhonesThunk={getPhonesThunk}
+              phones={loadedPhones}
+              isLoading={loadingStatus.isLoading}
+              isLoaded={loadingStatus.isLoaded}
+              location={location}
+              history={history}
+            />
+          )}
+        />
+        <Route
+          path="/phones/:id?"
+          render={({ match }) => (
+            <LoaderForPhone
+              id={match.params.id}
+              phones={loadedPhones}
+              getPhonesThunk={getPhonesThunk}
+            />
+          )}
+        />
+        <Route
+          path="/basket"
+          render={() => (
+            <Basket />
+          )}
+        />
+        <Route path="/rights" exact render={() => <Rights />} />
+        <Route component={Page404} />
+      </Switch>
 
-        <Switch>
-          <Route path="/" exact component={Index} />
-          <Route
-            path="/phones"
-            exact
-            render={({ location, history }) => (
-              <LoaderOfPhones
-                getPhonesThunk={getPhonesThunk}
-                phones={loadedPhones}
-                isLoading={loadingStatus.isLoading}
-                isLoaded={loadingStatus.isLoaded}
-                location={location}
-                history={history}
-              />
-            )}
-          />
-          <Route
-            path="/phones/:id?"
-            render={({ match }) => (
-              <LoaderForPhone
-                id={match.params.id}
-                phones={loadedPhones}
-                getPhonesThunk={getPhonesThunk}
-              />
-            )}
-          />
-          <Route
-            path="/basket"
-            render={() => (
-              <Basket />
-            )}
-          />
-          <Route path="/rights" exact render={() => <Rights />} />
-          <Route component={Page404} />
-        </Switch>
-
-        <Footer />
-      </div>
-    );
-  }
-}
+      <Footer />
+    </div>
+  );
+};
 
 App.propTypes = {
   phonesFromStorage: PropTypes.func.isRequired,
@@ -126,8 +104,6 @@ export default connect(({
   loadingStatus,
   loadedPhones,
 }), {
-  changeIsLoading,
-  changeIsLoaded,
   phonesFromStorage,
   getPhonesThunk,
 })(App);

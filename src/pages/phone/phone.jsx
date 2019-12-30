@@ -2,7 +2,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { addItemToBasket } from '../../redux/actions/actionsCreator';
+import { addItemToBasketThunk } from '../../redux/actions/actionsCreator';
 import { BASE_URL } from '../../lib/constants';
 import CheckMark from '../../components/CheckMark';
 
@@ -35,7 +35,7 @@ class Phone extends React.Component {
       phone,
       detailsOfCurrentPhone,
       itemsInBasket,
-      addItemToBasket,
+      addItemToBasketThunk,
     } = this.props;
     const { currentImg } = this.state;
 
@@ -80,7 +80,7 @@ class Phone extends React.Component {
                   ${itemsInBasket.find(item => item.id === id)
                 && 'button--add-in-basket_added'}`
               }
-              onClick={() => addItemToBasket(phone)}
+              onClick={() => addItemToBasketThunk(phone)}
             >
               {itemsInBasket.find(item => item.id === id)
                 ? 'Added to basket'
@@ -256,6 +256,7 @@ Phone.propTypes = {
   addItemToBasket: PropTypes.func.isRequired,
   itemsInBasket: PropTypes.arrayOf(PropTypes.object).isRequired,
   id: PropTypes.string.isRequired,
+  addItemToBasketThunk: PropTypes.func.isRequired,
 };
 
 export default connect(({
@@ -263,5 +264,5 @@ export default connect(({
 }) => ({
   itemsInBasket,
 }), {
-  addItemToBasket,
+  addItemToBasketThunk,
 })(Phone);
