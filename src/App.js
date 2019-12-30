@@ -9,7 +9,7 @@ import { connect } from 'react-redux';
 import {
   changeIsLoading,
   changeIsLoaded,
-  // phonesFromStorage,
+  phonesFromStorage,
   getPhonesThunk,
 } from './redux/actions/actionsCreator';
 import Navbar from './components/Navbar/Navbar';
@@ -21,6 +21,23 @@ import Basket from './pages/basket/basket';
 import Footer from './components/Footer/Footer';
 import Rights from './pages/rights/rights';
 
+// const App = ({
+//   loadingStatus,
+//   loadedPhones,
+//   phonesFromStorage,
+//   getPhonesThunk,
+//   basketManagerAndSetLocalStorageThunk,
+// }) => {
+//   useEffect(() => {
+//     const itemsFromBasketInLocal = JSON.parse(
+//       window.localStorage.getItem('itemsFromBasketInLocal')
+//     );
+
+//     if (itemsFromBasketInLocal !== null) {
+//       phonesFromStorage(itemsFromBasketInLocal);
+//     }
+//   }, [phonesFromStorage]);
+
 class App extends React.Component {
   componentDidMount() {
     const itemsFromBasketInLocal = JSON.parse(
@@ -28,11 +45,7 @@ class App extends React.Component {
     );
 
     if (itemsFromBasketInLocal !== null) {
-
-      // this.props.phonesFromStorage(itemsFromBasketInLocal);
-      // this.setState({
-      //   itemsInBasket: itemsFromBasketInLocal,
-      // });
+      this.props.phonesFromStorage(itemsFromBasketInLocal);
     }
   }
 
@@ -40,6 +53,8 @@ class App extends React.Component {
     const {
       loadingStatus,
       loadedPhones,
+      // eslint-disable-next-line no-shadow
+      getPhonesThunk,
     } = this.props;
 
     return (
@@ -53,7 +68,7 @@ class App extends React.Component {
             exact
             render={({ location, history }) => (
               <LoaderOfPhones
-                getPhonesThunk={this.props.getPhonesThunk}
+                getPhonesThunk={getPhonesThunk}
                 phones={loadedPhones}
                 isLoading={loadingStatus.isLoading}
                 isLoaded={loadingStatus.isLoaded}
@@ -68,7 +83,7 @@ class App extends React.Component {
               <LoaderForPhone
                 id={match.params.id}
                 phones={loadedPhones}
-                getPhonesThunk={this.props.getPhonesThunk}
+                getPhonesThunk={getPhonesThunk}
               />
             )}
           />
@@ -89,6 +104,7 @@ class App extends React.Component {
 }
 
 App.propTypes = {
+  phonesFromStorage: PropTypes.func.isRequired,
   getPhonesThunk: PropTypes.func.isRequired,
   loadedPhones: PropTypes.arrayOf(PropTypes.shape({
     age: PropTypes.number,
@@ -112,6 +128,6 @@ export default connect(({
 }), {
   changeIsLoading,
   changeIsLoaded,
-  // phonesFromStorage,
+  phonesFromStorage,
   getPhonesThunk,
 })(App);

@@ -5,7 +5,10 @@ import {
 } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { addItemToBasket } from '../../redux/actions/actionsCreator';
+import {
+  addItemToBasket,
+  addItemToBasketThunk,
+} from '../../redux/actions/actionsCreator';
 import { BASE_URL } from '../../lib/constants';
 import PaginationButtons from '../../components/Pagination/PaginationButtons';
 import PaginationInfo from '../../components/Pagination/PaginationInfo';
@@ -286,7 +289,7 @@ class Phones extends React.Component {
                       ${this.props.itemsInBasket.find(item => item.id === phone.id)
                       && 'button--add-in-basket_added'}`
                     }
-                    onClick={() => this.props.addItemToBasket(phone)}
+                    onClick={() => this.props.addItemToBasketThunk(phone)}
                   >
                     {this.props.itemsInBasket.find(item => item.id === phone.id)
                       ? 'Added to basket'
@@ -336,7 +339,7 @@ Phones.propTypes = {
     name: PropTypes.string,
     snippet: PropTypes.string,
   })).isRequired,
-  addItemToBasket: PropTypes.func.isRequired,
+  addItemToBasketThunk: PropTypes.func.isRequired,
   itemsInBasket: PropTypes.arrayOf(PropTypes.shape({
     age: PropTypes.number,
     id: PropTypes.string,
@@ -352,4 +355,5 @@ export default connect(({
   itemsInBasket,
 }), ({
   addItemToBasket,
+  addItemToBasketThunk,
 }))(Phones);

@@ -6,16 +6,16 @@ import classNames from 'classnames';
 import { connect } from 'react-redux';
 import { BASE_URL } from '../../lib/constants';
 import {
-  increaseItemInBasket,
-  decreaseItemInBasket,
-  deleteItemFromBasket,
+  increaseItemInBasketThunk,
+  decreaseItemInBasketThunk,
+  deleteItemFromBasketThunk,
 } from '../../redux/actions/actionsCreator';
 
 const PhoneInBasket = ({
   item,
-  increaseItemInBasket,
-  decreaseItemInBasket,
-  deleteItemFromBasket,
+  increaseItemInBasketThunk,
+  decreaseItemInBasketThunk,
+  deleteItemFromBasketThunk,
 }) => {
   const checkDisabledOrActive = classNames({
     'button--decrease-increase-disabled': item.quantity <= 1,
@@ -48,7 +48,7 @@ const PhoneInBasket = ({
       </div>
       <div className="basket-card__buttons-container">
         <button
-          onClick={() => decreaseItemInBasket(item.id)}
+          onClick={() => decreaseItemInBasketThunk(item.id)}
           className={`
             button button--decrease-increase 
             ${checkDisabledOrActive}`}
@@ -58,7 +58,7 @@ const PhoneInBasket = ({
         </button>
         <p className="basket-card__quantity-of-phone">{item.quantity}</p>
         <button
-          onClick={() => increaseItemInBasket(item.id)}
+          onClick={() => increaseItemInBasketThunk(item.id)}
           className="
             basket-card__increase-button
             button
@@ -69,7 +69,7 @@ const PhoneInBasket = ({
           +
         </button>
         <button
-          onClick={() => deleteItemFromBasket(item.id)}
+          onClick={() => deleteItemFromBasketThunk(item.id)}
           className="button button--remove"
           type="button"
         >
@@ -88,9 +88,9 @@ PhoneInBasket.propTypes = {
     name: PropTypes.string,
     snippet: PropTypes.string,
   }).isRequired,
-  increaseItemInBasket: PropTypes.func.isRequired,
-  decreaseItemInBasket: PropTypes.func.isRequired,
-  deleteItemFromBasket: PropTypes.func.isRequired,
+  increaseItemInBasketThunk: PropTypes.func.isRequired,
+  decreaseItemInBasketThunk: PropTypes.func.isRequired,
+  deleteItemFromBasketThunk: PropTypes.func.isRequired,
 };
 
 export default connect(({
@@ -98,7 +98,7 @@ export default connect(({
 }) => ({
   itemsInBasket,
 }), {
-  increaseItemInBasket,
-  decreaseItemInBasket,
-  deleteItemFromBasket,
+  increaseItemInBasketThunk,
+  decreaseItemInBasketThunk,
+  deleteItemFromBasketThunk,
 })(PhoneInBasket);
