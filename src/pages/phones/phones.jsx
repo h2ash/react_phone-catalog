@@ -1,4 +1,10 @@
-/* eslint-disable max-len */
+/**
+ * TODO: - pagination на Redux
+ *    [x] создать reducer
+ *    [x] создать actions
+ *    [] - интегрировать в phones
+ */
+
 import React from 'react';
 import {
   Link,
@@ -6,7 +12,8 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  addItemToBasket,
+  calcQuantityPagesAndTheirArr,
+  changeCurrentPage,
   addItemToBasketThunk,
 } from '../../redux/actions/actionsCreator';
 import { BASE_URL } from '../../lib/constants';
@@ -25,6 +32,8 @@ class Phones extends React.Component {
   };
 
   componentDidMount = () => {
+    this.props.changeCurrentPage(2);
+    this.props.calcQuantityPagesAndTheirArr(20, 3);
     const params = new URLSearchParams(this.props.location.search);
 
     if (params.get('curpage')) {
@@ -176,7 +185,8 @@ class Phones extends React.Component {
 
   calcQuantityAndArrOfPages = () => {
     this.setState(prevState => ({
-      pages: Math.ceil(prevState.phonesForShowing.length / prevState.phonesPerPage),
+      pages: Math
+        .ceil(prevState.phonesForShowing.length / prevState.phonesPerPage),
     }));
 
     this.setState((prevState) => {
@@ -286,7 +296,8 @@ class Phones extends React.Component {
                     type="button"
                     className={
                       `phone-card__button button button--add-in-basket
-                      ${this.props.itemsInBasket.find(item => item.id === phone.id)
+                      ${this.props.itemsInBasket
+                  .find(item => item.id === phone.id)
                       && 'button--add-in-basket_added'}`
                     }
                     onClick={() => this.props.addItemToBasketThunk(phone)}
@@ -350,10 +361,13 @@ Phones.propTypes = {
 };
 
 export default connect(({
+  pagination,
   itemsInBasket,
 }) => ({
+  pagination,
   itemsInBasket,
 }), ({
-  addItemToBasket,
+  changeCurrentPage,
+  calcQuantityPagesAndTheirArr,
   addItemToBasketThunk,
 }))(Phones);

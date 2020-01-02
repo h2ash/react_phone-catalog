@@ -9,6 +9,8 @@ import {
   DECREASE_QUANTITY_IN_BASKET,
   DELETE_ITEM_FROM_BASKET,
   CLEAR_BASKET,
+  CHANGE_CURRENT_PAGE,
+  CALC_QUANTITY_PAGES_AND_THEIR_ARR,
 } from '../../lib/constants';
 
 export const changeIsLoading = valueIsLoading => ({
@@ -54,18 +56,6 @@ export const deleteItemFromBasket = arrayToReplace => ({
 export const clearBasket = () => ({
   type: CLEAR_BASKET,
 });
-
-export const getPhonesThunk = () => async(dispatch) => {
-  dispatch(changeIsLoading(true));
-  dispatch(changeIsLoaded(false));
-
-  const responsePhones = await fetch(`${BASE_URL}/api/phones.json`);
-  const phones = await responsePhones.json();
-
-  dispatch(downloadPhones(phones));
-  dispatch(changeIsLoading(false));
-  dispatch(changeIsLoaded(true));
-};
 
 export const addItemToBasketThunk = phone => async(
   dispatch,
@@ -163,3 +153,29 @@ export const clearBasketThunk = () => async(
     JSON.stringify([])
   );
 };
+
+export const getPhonesThunk = () => async(dispatch) => {
+  dispatch(changeIsLoading(true));
+  dispatch(changeIsLoaded(false));
+
+  const responsePhones = await fetch(`${BASE_URL}/api/phones.json`);
+  const phones = await responsePhones.json();
+
+  dispatch(downloadPhones(phones));
+  dispatch(changeIsLoading(false));
+  dispatch(changeIsLoaded(true));
+};
+
+export const changeCurrentPage = page => ({
+  type: CHANGE_CURRENT_PAGE,
+  page,
+});
+
+export const calcQuantityPagesAndTheirArr = (
+  phonesForShowing,
+  phonesPerPage
+) => ({
+  type: CALC_QUANTITY_PAGES_AND_THEIR_ARR,
+  phonesForShowing,
+  phonesPerPage,
+});
