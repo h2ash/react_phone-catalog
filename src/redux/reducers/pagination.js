@@ -1,6 +1,7 @@
 import {
   CHANGE_CURRENT_PAGE,
-  CALC_QUANTITY_PAGES_AND_THEIR_ARR,
+  SET_QUANTITY_PAGES,
+  CALC_ARRAY_FOR_PAGES,
 } from '../../lib/constants';
 
 const defaultState = {
@@ -16,22 +17,12 @@ export const pagination = (state = defaultState, action) => {
         ...state, currentPage: action.page,
       };
 
-    case CALC_QUANTITY_PAGES_AND_THEIR_ARR:
+    case SET_QUANTITY_PAGES:
     {
-      const totalPages = Math.ceil(action.phonesForShowing
-        / action.phonesPerPage);
-
-      const resultingArrayOfPages = [];
-
-      // eslint-disable-next-line no-plusplus
-      for (let index = 1; index <= totalPages; index++) {
-        resultingArrayOfPages.push(index);
-      }
-
       return {
         ...state,
-        pages: totalPages,
-        arrOfPages: [...resultingArrayOfPages],
+        pages: action.pages,
+        arrOfPages: action.arr,
       };
     }
 

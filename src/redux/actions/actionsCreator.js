@@ -10,7 +10,6 @@ import {
   DELETE_ITEM_FROM_BASKET,
   CLEAR_BASKET,
   CHANGE_CURRENT_PAGE,
-  CALC_QUANTITY_PAGES_AND_THEIR_ARR,
 } from '../../lib/constants';
 
 export const changeIsLoading = valueIsLoading => ({
@@ -171,11 +170,7 @@ export const changeCurrentPage = page => ({
   page,
 });
 
-export const calcQuantityPagesAndTheirArr = (
-  phonesForShowing,
-  phonesPerPage
-) => ({
-  type: CALC_QUANTITY_PAGES_AND_THEIR_ARR,
-  phonesForShowing,
-  phonesPerPage,
-});
+// export const setQuantityOfPages = pages => ({
+//   type: QUANTITY_PAGES,
+//   pages,
+// });

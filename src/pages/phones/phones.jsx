@@ -3,339 +3,262 @@
  *    [x] создать reducer
  *    [x] создать actions
  *    [] - интегрировать в phones
+ * TOOD: - phones_hooks
  */
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Link,
 } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  calcQuantityPagesAndTheirArr,
   changeCurrentPage,
   addItemToBasketThunk,
 } from '../../redux/actions/actionsCreator';
+import calcArrayOfPages from '../../helpers/calcArrayOfPages';
+import sortArrayByValue from '../../helpers/sortArrayByValue';
 import { BASE_URL } from '../../lib/constants';
 import PaginationButtons from '../../components/Pagination/PaginationButtons';
 import PaginationInfo from '../../components/Pagination/PaginationInfo';
 
-class Phones extends React.Component {
-  state = {
-    phonesForShowing: [],
-    sortBy: 'age',
-    inputValue: '',
-    page: 1,
-    phonesPerPage: 20,
-    pages: 1,
-    arrOfPages: [1],
-  };
+const Phones = ({
+  location,
+  history,
+  itemsInBasket,
+  addItemToBasketThunk,
+  phones,
+}) => {
+  const [sortedReceivedPhones, setSortedReceivedPhones] = useState(phones);
+  const [phonesForShowing, setPhonesForShowing] = useState(phones);
+  const [sortBy, setSortBy] = useState('age');
+  const [inputValue, setInputValue] = useState('');
+  const [page, setPage] = useState(1);
+  const [phonesPerPage, setPhonesPerPage] = useState(20);
+  const [pages, setPages] = useState(1);
+  const [arrOfPages, setArrOfPages] = useState([1]);
+  const [
+    firstIndexPhoneOnCurrentPage,
+    setFirstIndexPhoneOnCurrentPage
+  ] = useState(1);
+  const [
+    lastPossibleIndexPhoneOnCurPage,
+    setLastPossibleIndexPhoneOnCurPage
+  ] = useState((page * phonesPerPage) - 1);
 
-  componentDidMount = () => {
-    this.props.changeCurrentPage(2);
-    this.props.calcQuantityPagesAndTheirArr(20, 3);
-    const params = new URLSearchParams(this.props.location.search);
+  const params = new URLSearchParams(location.search);
 
-    if (params.get('curpage')) {
-      this.setState({
-        page: Number(params.get('curpage')),
-      });
-    }
+  useEffect(() => {
+    setSortedReceivedPhones(
+      sortArrayByValue(phones, sortBy)
+    );
+  }, [sortBy]);
 
-    if (params.get('perpage')) {
-      this.setState({
-        phonesPerPage: Number(params.get('perpage')),
-      });
-    }
+  useEffect(() => {
+    if (params.get('filter') !== null) {
+      const phonesToSet = sortedReceivedPhones.filter(phone => phone.id
+        .toLowerCase().includes(params.get('filter').toLowerCase()));
 
-    if (params.get('filter')) {
-      this.setState({
-        phonesForShowing: [...this.props.phones]
-          .filter(phone => phone.id
-            .toLowerCase().includes(params.get('filter').toLowerCase())),
-        inputValue: params.get('filter'), // text in input
-      });
-
-      if (params.get('sort')) {
-        this.sortFunctionByValue(params.get('sort'));
-      }
+      setPhonesForShowing(phonesToSet);
+      setInputValue(params.get('filter'));
+      setPages(Math.ceil(phonesToSet.length / phonesPerPage));
     } else {
-      this.setState({
-        phonesForShowing: this.props.phones,
-      });
-
-      if (params.get('sort')) {
-        this.sortFunctionByValue(params.get('sort'));
-      }
+      setPhonesForShowing(sortedReceivedPhones);
+      setPages(Math.ceil(sortedReceivedPhones.length / phonesPerPage));
+      setInputValue('');
+      setPage(1);
     }
+  }, [params.get('filter'), sortedReceivedPhones, phonesPerPage]);
 
-    this.calcQuantityAndArrOfPages();
-  };
-
-  componentDidUpdate = (prevProps) => {
-    // query params section
-    const curURLParams = new URLSearchParams(this.props.location.search);
-    const prevURLParams = new URLSearchParams(prevProps.location.search);
-
-    if (curURLParams.get('curpage') !== prevURLParams.get('curpage')) {
-      this.setState({
-        page: Number(curURLParams.get('curpage')),
-      });
+  useEffect(() => {
+    if (params.get('sort') !== null) {
+      setPhonesForShowing(
+        sortArrayByValue(phonesForShowing, params.get('sort'))
+      );
+      setSortBy(params.get('sort'), phonesForShowing);
     }
+  }, [params.get('sort')]);
 
-    if (curURLParams.get('perpage') !== prevURLParams.get('perpage')) {
-      this.setState({
-        phonesPerPage: Number(curURLParams.get('perpage')),
-      });
+  useEffect(() => {
+    if (params.get('perpage') !== null) {
+      setPhonesPerPage(Number(params.get('perpage')));
+      setPages(
+        Math.ceil(phonesForShowing.length / Number(params.get('perpage')))
+      );
     }
+  }, [params.get('perpage'), phonesForShowing]);
 
-    if (curURLParams.get('filter') !== prevURLParams.get('filter')) {
-      this.setState({
-        phonesForShowing: [...this.props.phones]
-          .filter(phone => phone.id
-            .toLowerCase().includes(curURLParams.get('filter').toLowerCase())),
-        inputValue: curURLParams.get('filter'), // text in input
-      });
-
-      if (curURLParams.get('sort') !== prevURLParams.get('sort')) {
-        this.sortFunctionByValue(curURLParams.get('sort'));
-      } else {
-        this.sortFunctionByValue(prevURLParams.get('sort'));
-      }
+  useEffect(() => {
+    if (params.get('curpage') !== null) {
+      setPage(Number(params.get('curpage')));
     }
+  }, [params.get('curpage')]);
 
-    if (curURLParams.get('sort') !== prevURLParams.get('sort')) {
-      this.sortFunctionByValue(curURLParams.get('sort'));
-    }
-  };
+  useEffect(() => {
+    setArrOfPages(calcArrayOfPages(pages));
+  }, [pages]);
 
-  filterHandleInput = (event) => {
+  useEffect(() => {
+    const firstIndexToSet = page === 1
+      ? 0 // index of FIRST phone from filtered phonesForShowing
+      : (page - 1) * phonesPerPage;
+    const lastIndexToSet = (page * phonesPerPage) - 1;
+
+    setFirstIndexPhoneOnCurrentPage(firstIndexToSet);
+    setLastPossibleIndexPhoneOnCurPage(lastIndexToSet);
+  }, [page, phonesPerPage]);
+
+  const filterHandleInput = (event) => {
     const { value } = event.target;
 
-    this.setState({
-      inputValue: value, // showing in input,
-      phonesForShowing: this.props.phones
-        .filter(phone => phone.id.toLowerCase().includes(value.toLowerCase())),
-    });
-
-    this.sortFunctionByValue(this.state.sortBy);
-    this.calcQuantityAndArrOfPages();
-    this.choosePage(1);
-    this.setQueryParamsInURL('filter', value);
+    setQueryParamsInURL('filter', value);
+    setQueryParamsInURL('curpage', 1);
   };
 
-  sortHandleSelect = (event) => {
+  const sortHandleSelect = (event) => {
     const { value } = event.target;
 
-    this.sortFunctionByValue(value);
-    this.choosePage(1);
-    this.setQueryParamsInURL('sort', value);
+    setQueryParamsInURL('sort', value);
+    setQueryParamsInURL('curpage', 1);
   };
 
-  chooseQuantityOfPhonesPerPage = (event) => {
+  const chooseQuantityOfPhonesPerPage = (event) => {
     const { value } = event.target;
 
-    this.setState({
-      phonesPerPage: Number(value),
-    });
-
-    this.calcQuantityAndArrOfPages();
-    this.choosePage(1);
-    this.setQueryParamsInURL('perpage', value);
+    setQueryParamsInURL('perpage', value);
+    setQueryParamsInURL('curpage', 1);
   };
 
-  choosePage = (value) => {
-    this.setState({
-      page: value,
-    }, () => {
-      this.setQueryParamsInURL('curpage', value);
-    });
+  const choosePage = (value) => {
+    setQueryParamsInURL('curpage', value);
   };
 
-  sortFunctionByValue = (value) => {
-    this.setState(prevState => ({
-      sortBy: value,
-      phonesForShowing: [...prevState.phonesForShowing].sort((a, b) => {
-        const valueA = a[value];
-        const valueB = b[value];
-
-        switch (value) {
-          case 'age':
-            return valueA - valueB;
-          case 'name':
-            return valueA.localeCompare(valueB);
-          default:
-            return 0;
-        }
-      }),
-    }));
-  };
-
-  setQueryParamsInURL = (paramsName, valueToSet) => {
-    const params = new URLSearchParams(this.props.location.search);
-
+  const setQueryParamsInURL = (paramsName, valueToSet) => {
     params.set(paramsName, valueToSet);
 
-    // eslint-disable-next-line react/prop-types
-    this.props.history.push({
+    history.push({
       pathname: '/phones',
       search: `?${params.toString()}`,
     });
   };
 
-  calcQuantityAndArrOfPages = () => {
-    this.setState(prevState => ({
-      pages: Math
-        .ceil(prevState.phonesForShowing.length / prevState.phonesPerPage),
-    }));
+  return (
+    <div className="phones-page">
+      <h1 className="heading heading--l phones-page__quantity-phones">
+        Phones Quantity:
+        {phonesForShowing.length}
+      </h1>
 
-    this.setState((prevState) => {
-      const arr = [];
+      <div className="phones-page__input-and-select-container">
 
-      // eslint-disable-next-line no-plusplus
-      for (let i = 1; i <= prevState.pages; i++) {
-        arr.push(i);
-      }
+        <input
+          className="phones-page__filter"
+          placeholder="Filter phones by name"
+          value={inputValue}
+          onChange={filterHandleInput}
+          id="search_field"
+          type="text"
+        />
 
-      return {
-        arrOfPages: arr,
-      };
-    });
-  };
-
-  render() {
-    const {
-      phonesForShowing,
-      phonesPerPage,
-      page,
-      pages,
-      arrOfPages,
-      inputValue,
-      sortBy,
-    } = this.state;
-    const firstIndexPhoneOnCurrentPage = page === 1
-      ? 0 // index of FIRST phone from filtered phonesForShowing
-      : (page - 1) * phonesPerPage;
-    const lastPossibleIndexPhoneOnCurPage = (page * phonesPerPage) - 1;
-
-    return (
-      <div className="phones-page">
-        <h1 className="heading heading--l phones-page__quantity-phones">
-          Phones Quantity:
-          {phonesForShowing.length}
-        </h1>
-
-        <div className="phones-page__input-and-select-container">
-
-          <input
-            className="phones-page__filter"
-            placeholder="Filter phones by name"
-            value={inputValue}
-            onChange={this.filterHandleInput}
-            id="search_field"
-            type="text"
-          />
-
-          <select
-            className="phones-page__sort"
-            value={sortBy}
-            id="sort"
-            onChange={this.sortHandleSelect}
-          >
-            <option value="age">Newest</option>
-            <option value="name">Alphabetical</option>
-          </select>
-
-          <select
-            className="phones-page__perpage"
-            value={this.state.phonesPerPage}
-            onChange={this.chooseQuantityOfPhonesPerPage}
-            id="chooseQuantityOfPhonesPerPage"
-          >
-            <option value="20">Per Page: 20</option>
-            <option value="10">Per Page: 10</option>
-            <option value="5">Per Page: 5</option>
-            <option value="3">Per Page: 3</option>
-          </select>
-        </div>
-
-        <ul
-          className="phones-page__list-of-phones" // временный
+        <select
+          className="phones-page__sort"
+          value={sortBy}
+          id="sort"
+          onChange={sortHandleSelect}
         >
-          {
-            phonesForShowing
-              .filter((phone, index) => index >= firstIndexPhoneOnCurrentPage
-                && index <= lastPossibleIndexPhoneOnCurPage)
-              .map(phone => (
-                <li
-                  key={phone.id}
-                  className="phone-card" // временный
-                >
-                  <div>
-                    <Link to={`/phones/${phone.id}`}>
-                      <img
-                        className="phone-card__img" // временный
-                        src={`${BASE_URL}/${phone.imageUrl}`}
-                        alt={`${phone.id}`}
-                      />
-                    </Link>
+          <option value="age">Newest</option>
+          <option value="name">Alphabetical</option>
+        </select>
 
-                    <Link
-                      className="phone-card__heading link link--phone-heading"
-                      to={`/phones/${phone.id}`}
-                    >
-                      {phone.name}
-                    </Link>
-
-                    <section className="phone-card__snippet">
-                      {phone.snippet}
-                    </section>
-                  </div>
-
-                  <button
-                    type="button"
-                    className={
-                      `phone-card__button button button--add-in-basket
-                      ${this.props.itemsInBasket
-                  .find(item => item.id === phone.id)
-                      && 'button--add-in-basket_added'}`
-                    }
-                    onClick={() => this.props.addItemToBasketThunk(phone)}
-                  >
-                    {this.props.itemsInBasket.find(item => item.id === phone.id)
-                      ? 'Added to basket'
-                      : 'Add to basket'}
-                  </button>
-                </li>
-              ))
-          }
-        </ul>
-
-        {
-          pages > 1
-            ? (
-              <div className="phones-page__pagination-container pagination">
-                <PaginationInfo
-                  page={page}
-                  pages={pages}
-                  phonesPerPage={phonesPerPage}
-                  phonesForShowing={phonesForShowing}
-                />
-
-                <PaginationButtons
-                  choosePage={this.choosePage}
-                  page={page}
-                  pages={pages}
-                  arrOfPages={arrOfPages}
-                />
-              </div>
-            )
-            : ''
-        }
+        <select
+          className="phones-page__perpage"
+          value={phonesPerPage}
+          onChange={chooseQuantityOfPhonesPerPage}
+          id="chooseQuantityOfPhonesPerPage"
+        >
+          <option value="20">Per Page: 20</option>
+          <option value="10">Per Page: 10</option>
+          <option value="5">Per Page: 5</option>
+          <option value="3">Per Page: 3</option>
+        </select>
       </div>
-    );
-  }
-}
+
+      <ul
+        className="phones-page__list-of-phones" // временный
+      >
+        {
+          phonesForShowing
+            .filter((phone, index) => index >= firstIndexPhoneOnCurrentPage
+              && index <= lastPossibleIndexPhoneOnCurPage)
+            .map(phone => (
+              <li
+                key={phone.id}
+                className="phone-card" // временный
+              >
+                <div>
+                  <Link to={`/phones/${phone.id}`}>
+                    <img
+                      className="phone-card__img" // временный
+                      src={`${BASE_URL}/${phone.imageUrl}`}
+                      alt={`${phone.id}`}
+                    />
+                  </Link>
+
+                  <Link
+                    className="phone-card__heading link link--phone-heading"
+                    to={`/phones/${phone.id}`}
+                  >
+                    {phone.name}
+                  </Link>
+
+                  <section className="phone-card__snippet">
+                    {phone.snippet}
+                  </section>
+                </div>
+
+                <button
+                  type="button"
+                  className={
+                    `phone-card__button button button--add-in-basket
+                    ${itemsInBasket
+                .find(item => item.id === phone.id)
+                    && 'button--add-in-basket_added'}`
+                  }
+                  onClick={() => addItemToBasketThunk(phone)}
+                >
+                  {itemsInBasket.find(item => item.id === phone.id)
+                    ? 'Added to basket'
+                    : 'Add to basket'}
+                </button>
+              </li>
+            ))
+        }
+      </ul>
+
+      {
+        pages > 1
+          ? (
+            <div className="phones-page__pagination-container pagination">
+              <PaginationInfo
+                page={page}
+                pages={pages}
+                phonesPerPage={phonesPerPage}
+                phonesForShowing={phonesForShowing}
+              />
+
+              <PaginationButtons
+                choosePage={choosePage}
+                page={page}
+                pages={pages}
+                arrOfPages={arrOfPages}
+              />
+            </div>
+          )
+          : ''
+      }
+    </div>
+  );
+};
 
 Phones.propTypes = {
   location: PropTypes.shape({
@@ -368,6 +291,5 @@ export default connect(({
   itemsInBasket,
 }), ({
   changeCurrentPage,
-  calcQuantityPagesAndTheirArr,
   addItemToBasketThunk,
 }))(Phones);

@@ -22,8 +22,6 @@ const LoaderOfPhones = ({
           ? (
             <Phones
               phones={phones}
-              isLoading={isLoading}
-              isLoaded={isLoaded}
               location={location}
               history={history}
 

@@ -11,6 +11,8 @@ const PaginationInfo = ({
     ? phonesForShowing.length
     : page * phonesPerPage;
 
+  console.log("PaginationInfo from, pages: ", pages);
+  console.log("PaginationInfo from, phonesForShowing: ", phonesForShowing);
   return (
     <div className="phones-page__pagination-info">
       Shown

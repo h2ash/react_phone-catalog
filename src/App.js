@@ -43,7 +43,7 @@ const App = ({
       <Switch>
         <Route path="/" exact component={Index} />
         <Route
-          path="/phones"
+          path=""
           exact
           render={({ location, history }) => (
             <LoaderOfPhones
