@@ -3,7 +3,6 @@
  *    [x] создать reducer
  *    [x] создать actions
  *    [] - интегрировать в phones
- * TOOD: - phones_hooks
  */
 
 import React, { useState, useEffect } from 'react';
@@ -29,6 +28,7 @@ const Phones = ({
   addItemToBasketThunk,
   phones,
 }) => {
+  console.log(history);
   const [sortedReceivedPhones, setSortedReceivedPhones] = useState(phones);
   const [phonesForShowing, setPhonesForShowing] = useState(phones);
   const [sortBy, setSortBy] = useState('age');
@@ -39,11 +39,11 @@ const Phones = ({
   const [arrOfPages, setArrOfPages] = useState([1]);
   const [
     firstIndexPhoneOnCurrentPage,
-    setFirstIndexPhoneOnCurrentPage
+    setFirstIndexPhoneOnCurrentPage,
   ] = useState(1);
   const [
     lastPossibleIndexPhoneOnCurPage,
-    setLastPossibleIndexPhoneOnCurPage
+    setLastPossibleIndexPhoneOnCurPage,
   ] = useState((page * phonesPerPage) - 1);
 
   const params = new URLSearchParams(location.search);
@@ -261,6 +261,8 @@ const Phones = ({
 };
 
 Phones.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  history: PropTypes.object.isRequired,
   location: PropTypes.shape({
     hash: PropTypes.string,
     pathname: PropTypes.string,

@@ -13,7 +13,6 @@ const sortArrayByValue = (arrayToSort, sortByValue) => {
     }
   });
 
-  console.log('returnedSortedArray', sortedArray);
   return sortedArray;
 };
 
