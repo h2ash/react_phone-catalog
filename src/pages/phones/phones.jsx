@@ -1,10 +1,3 @@
-/**
- * TODO: - pagination на Redux
- *    [x] создать reducer
- *    [x] создать actions
- *    [] - интегрировать в phones
- */
-
 import React, { useState, useEffect } from 'react';
 import {
   Link,
@@ -12,7 +5,6 @@ import {
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import {
-  changeCurrentPage,
   addItemToBasketThunk,
 } from '../../redux/actions/actionsCreator';
 import calcArrayOfPages from '../../helpers/calcArrayOfPages';
@@ -25,6 +17,7 @@ const Phones = ({
   location,
   history,
   itemsInBasket,
+  // eslint-disable-next-line no-shadow
   addItemToBasketThunk,
   phones,
 }) => {
@@ -32,8 +25,8 @@ const Phones = ({
   const [phonesForShowing, setPhonesForShowing] = useState(phones);
   const [sortBy, setSortBy] = useState('age');
   const [inputValue, setInputValue] = useState('');
-  const [page, setPage] = useState(1);
   const [phonesPerPage, setPhonesPerPage] = useState(20);
+  const [page, setPage] = useState(1);
   const [pages, setPages] = useState(1);
   const [arrOfPages, setArrOfPages] = useState([1]);
   const [
@@ -289,12 +282,9 @@ Phones.propTypes = {
 };
 
 export default connect(({
-  pagination,
   itemsInBasket,
 }) => ({
-  pagination,
   itemsInBasket,
 }), ({
-  changeCurrentPage,
   addItemToBasketThunk,
 }))(Phones);

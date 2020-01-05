@@ -9,7 +9,6 @@ import {
   DECREASE_QUANTITY_IN_BASKET,
   DELETE_ITEM_FROM_BASKET,
   CLEAR_BASKET,
-  CHANGE_CURRENT_PAGE,
 } from '../../lib/constants';
 
 export const changeIsLoading = valueIsLoading => ({
@@ -164,13 +163,3 @@ export const getPhonesThunk = () => async(dispatch) => {
   dispatch(changeIsLoading(false));
   dispatch(changeIsLoaded(true));
 };
-
-export const changeCurrentPage = page => ({
-  type: CHANGE_CURRENT_PAGE,
-  page,
-});
-
-// export const setQuantityOfPages = pages => ({
-//   type: QUANTITY_PAGES,
-//   pages,
-// });

@@ -13,7 +13,7 @@ const LoaderForPhone = ({ getPhonesThunk, id, phones }) => {
   useEffect(() => {
     getPhonesThunk();
     loadDataDetails(id);
-  }, [getPhonesThunk]);
+  }, [getPhonesThunk, id]);
 
   const loadDataDetails = async(currentId) => {
     setIsLoading(true);
