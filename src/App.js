@@ -1,181 +1,170 @@
 import React from 'react';
-import './App.css';
-import {
-  Route,
-  Switch,
-  NavLink
-} from 'react-router-dom'
-import HomePage from './components/HomePage'
-import PhonesPage from './components/PhonesPage'
-import NotFoundPage from './components/NotFoundPage'
-import PhoneDetailsPage from './components/PhoneDetailsPage'
-import Basket from './components/Basket'
-
-/**
- * [x] - переделать стиль CSS, чтобы без bootstrap
- * [x] - передать функцию компоненту PhonePage
- * [x] - Implement a Loader to show it while 
- *      waiting for the data from server
- * [x] - сделать из списка блоки с информацией
- * [x] - PhoneDetailsPage + router
- *    [x] - почистить код
- *    [x] - прокинуть расширенные данные
- *    [x] - прикрутить Loader
- *      [x] - уточка, почему работает не так?
- *      [x] - создать отдельную функцию
- *      [x] - исправить старую функцию
- * [x] - сделать страницу с основной информацией
- *      текущего телефона
- * [] - в конце доделать основную информацию
- * [x] - реализовать сортировку и поиск
- *    [х] - логика
- *    [x] - сss
- * [x] - сss отодвинуть от края поля
- * [] - корзина
- *    [x] - логика
- *    [x] - реализовать саму страницу basket
- *    [] - починить css активной корзины
- * [] - поработать над стилями всей страницы
- * [x] - исправить ссылки для github
- * [х] - исправить доп. инфу по телефонам
- * [x] - рефакторинг PhoneDetailsPage по state, loadDataDetails, очистка App
- * 
- * 
- */
+import './styles/app.scss';
+import { Route, Switch } from 'react-router-dom';
+import Navbar from './components/Navbar/Navbar';
+import Index from './pages/index';
+import LoaderOfPhones from './pages/phones/loaderOfPhones';
+import Page404 from './pages/Page404/Page404';
+import LoaderForPhone from './pages/phone/loaderForPhone';
+import Basket from './pages/basket/basket';
+import { BASE_URL } from './lib/constants';
+import Footer from './components/Footer/Footer';
+import Rights from './pages/rights/rights';
 
 class App extends React.Component {
   state = {
-    phones: '',
+    phones: [],
     isLoading: false,
     isLoaded: false,
-    itemsAtBasket: [],
-  }
+    itemsInBasket: [],
+  };
 
-  basketManager = (id, operation) => {
-    const currentIndex = this.state.itemsAtBasket
-      .findIndex(element => element.id === id)
+  componentDidMount() {
+    const itemsFromBasketInLocal = JSON.parse(
+      localStorage.getItem('itemsFromBasketInLocal')
+    );
 
-    this.setState(prevState => {
-      let changedArray = [...prevState.itemsAtBasket];
-
-      switch (operation) {
-        case 'increase':
-          return changedArray[currentIndex].quantity += 1;
-        case 'decrease':
-          changedArray[currentIndex].quantity === 1
-            ? changedArray = changedArray.filter(obj => obj.id !== id)
-            : changedArray[currentIndex].quantity -= 1
-          break;
-        case 'remove':
-          changedArray = changedArray.filter(obj => obj.id !== id)
-          break;
-      }
-
-      return {
-        itemsAtBasket: changedArray,
-      }
-    })
-  }
-
-  addItemToBasket = (itemToAdd) => {
-    const currentIndex = this.state.itemsAtBasket
-      .findIndex(element => element.id === itemToAdd.id);
-    
-    if (currentIndex >= 0) {
-      this.setState(prevState => {
-        const changedArray = [...prevState.itemsAtBasket];
-        changedArray[currentIndex].quantity += 1;
-
-        return {
-          itemsAtBasket: changedArray,
-        }
-      })
-    } else {
-      const requiredItem = {...itemToAdd};
-      requiredItem.quantity = 1;
-  
-      this.setState(prevState => ({
-        itemsAtBasket: [...prevState.itemsAtBasket, requiredItem],
-      }))
+    if (itemsFromBasketInLocal !== null) {
+      this.setState({
+        itemsInBasket: itemsFromBasketInLocal,
+      });
     }
   }
 
-  loadDataPhones = async () => {
+  basketManager = (id, operation) => {
+    const currentIndex = this.state.itemsInBasket.findIndex(
+      element => element.id === id
+    );
+
+    this.setState(
+      (prevState) => {
+        let changedArray = [...prevState.itemsInBasket];
+
+        switch (operation) {
+          case 'increase':
+            return (changedArray[currentIndex].quantity += 1);
+          case 'decrease':
+            changedArray[currentIndex].quantity === 1
+              ? (changedArray = changedArray.filter(obj => obj.id !== id))
+              : (changedArray[currentIndex].quantity -= 1);
+            break;
+          case 'remove':
+            changedArray = changedArray.filter(obj => obj.id !== id);
+            break;
+          case 'removeAll':
+            changedArray = [];
+            break;
+          default:
+            break;
+        }
+
+        return {
+          itemsInBasket: changedArray,
+        };
+      },
+      () => {
+        localStorage.setItem(
+          'itemsFromBasketInLocal',
+          JSON.stringify(this.state.itemsInBasket)
+        );
+      }
+    );
+  };
+
+  addItemToBasket = (itemToAdd) => {
+    const currentIndex = this.state.itemsInBasket.findIndex(
+      element => element.id === itemToAdd.id
+    );
+
+    if (currentIndex < 0) {
+      const requiredItem = { ...itemToAdd };
+
+      requiredItem.quantity = 1;
+
+      this.setState(
+        prevState => ({
+          itemsInBasket: [...prevState.itemsInBasket, requiredItem],
+        }),
+        () => {
+          localStorage.setItem(
+            'itemsFromBasketInLocal',
+            JSON.stringify(this.state.itemsInBasket)
+          );
+        }
+      );
+    }
+  };
+
+  loadDataPhones = async() => {
     this.setState({
       isLoaded: false,
       isLoading: true,
-    })
+    });
 
-    const responsePhones = await
-      fetch('https://mate-academy.github.io/phone-catalogue-static/api/phones.json')
+    const responsePhones = await fetch(`${BASE_URL}/api/phones.json`);
     const phones = await responsePhones.json();
 
     this.setState({
-      phones: phones,
+      phones,
       isLoading: false,
       isLoaded: true,
-    })
-  }
+    });
+  };
 
   render() {
-    const {phones, isLoading, isLoaded, itemsAtBasket} = this.state;
+    // eslint-disable-next-line object-curly-newline
+    const { phones, isLoading, isLoaded, itemsInBasket } = this.state;
 
     return (
-      <div>
-        <nav className="nav-menu-header">
-          <NavLink 
-            className="nav-menu-header__item"
-            href="#"
-            exact to='/'
-          >
-              Home
-          </NavLink>
-
-          <NavLink 
-            className="nav-menu-header__item" 
-            href="#"
-            to='/phones/'
-          >
-            Phones
-          </NavLink>
-          
-          <NavLink
-            className="nav-menu-header__item basket" 
-            href='#'
-            to='/basket/'
-          >
-          </NavLink>
-        </nav>
+      <div className="app">
+        <Navbar itemsInBasket={itemsInBasket} />
 
         <Switch>
-          <Route path='/' exact component={HomePage}/>
-          <Route path='/phones/' exact render={() =>
-            <PhonesPage 
-              addItemToBasket={this.addItemToBasket}
-              loadDataPhones={this.loadDataPhones}
-              phones={phones}
-              isLoading={isLoading}
-              isLoaded={isLoaded}
-            />
-          }/>
-          <Route path='/phones/:id?' render={({ match }) =>
-            <PhoneDetailsPage
-              loadDataPhones={this.loadDataPhones}
-              phones={phones}
-              id={match.params.id}
-            />  
-          } />
-          <Route path='/basket/' render={() =>
-            <Basket 
-              itemsAtBasket={itemsAtBasket}
-              basketManager={this.basketManager}
-            />
-          }
+          <Route path="/" exact component={Index} />
+          <Route
+            path="/phones"
+            exact
+            render={({ location, history }) => (
+              <LoaderOfPhones
+                addItemToBasket={this.addItemToBasket}
+                loadDataPhones={this.loadDataPhones}
+                phones={phones}
+                isLoading={isLoading}
+                isLoaded={isLoaded}
+                location={location}
+                history={history}
+                itemsInBasket={itemsInBasket}
+              />
+            )}
           />
-          <Route component={NotFoundPage}/>
+          <Route
+            path="/phones/:id?"
+            render={({ match }) => (
+              <LoaderForPhone
+                id={match.params.id}
+                phones={phones}
+                itemsInBasket={itemsInBasket}
+                addItemToBasket={this.addItemToBasket}
+                loadDataPhones={this.loadDataPhones}
+              />
+            )}
+          />
+          <Route
+            path="/basket"
+            render={() => (
+              <Basket
+                itemsInBasket={itemsInBasket}
+                basketManager={this.basketManager}
+              />
+            )}
+          />
+          <Route path="/rights" exact render={() => <Rights />} />
+          <Route component={Page404} />
         </Switch>
+
+        <Footer />
       </div>
-    )
+    );
   }
 }
 
