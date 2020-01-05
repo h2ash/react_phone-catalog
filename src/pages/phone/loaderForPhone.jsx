@@ -1,99 +1,79 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Loader from '../../components/Loader/Loader';
 import Phone from './phone';
 import { BASE_URL } from '../../lib/constants';
 import NoSuchPhone from '../NoSuchPhone/NoSuchPhone';
 
-class LoaderForPhone extends React.Component {
-  state = {
-    detailsOfCurrentPhone: {},
-    isLoading: false,
-    isLoaded: false,
-  }
+const LoaderForPhone = ({ getPhonesThunk, id, phones }) => {
+  const [detailsOfCurrentPhone, setDetailsOfCurrentPhone] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(true);
 
-  componentDidMount = () => {
-    this.props.getPhonesThunk();
-    this.loadDataDetails(this.props.id);
-  };
+  useEffect(() => {
+    getPhonesThunk();
+    loadDataDetails(id);
+  }, [getPhonesThunk]);
 
-  loadDataDetails = async(currentId) => {
-    this.setState({
-      isLoading: true,
-    });
+  const loadDataDetails = async(currentId) => {
+    setIsLoading(true);
 
     try {
       const responseDetails = await
       fetch(`${BASE_URL}/api/phones/${currentId}.json`);
-      const detailsOfCurrentPhone = await responseDetails.json();
+      const fetchedDetailsOfCurrentPhone = await responseDetails.json();
 
-      this.setState({
-        detailsOfCurrentPhone,
-        isLoading: false,
-        isLoaded: true,
-      });
+      setDetailsOfCurrentPhone(fetchedDetailsOfCurrentPhone);
+      setIsLoading(false);
+      setIsLoaded(true);
     } catch {
-      this.setState({
-        isLoading: false,
-      });
+      setIsLoading(false);
     }
   };
 
-  render() {
-    const {
-      id,
-      phones,
-    } = this.props;
-    const {
-      detailsOfCurrentPhone,
-      isLoading,
-      isLoaded,
-    } = this.state;
-
-    if (isLoading) {
-      return (
-        <main className="wrapper__main">
-          <Loader
-            isLoading={isLoading}
-          />
-        </main>
-      );
-    }
-
-    if (isLoaded) {
-      return (
-        <main className="wrapper__main">
-          {
-            id === detailsOfCurrentPhone.id
-              ? (
-                <>
-                  {
-                    phones
-                      .filter(phone => phone.id === id)
-                      .map(phone => (
-                        <Phone
-                          id={id}
-                          phone={phone}
-                          key={phone.id}
-                          detailsOfCurrentPhone={detailsOfCurrentPhone}
-                        />
-                      ))
-                  }
-                </>
-              )
-              : <NoSuchPhone />
-          }
-        </main>
-      );
-    }
-
+  if (isLoading) {
     return (
       <main className="wrapper__main">
-        <NoSuchPhone />
+        <Loader
+          isLoading={isLoading}
+        />
       </main>
     );
   }
-}
+
+  if (isLoaded) {
+    return (
+      <main className="wrapper__main">
+        {
+          id === detailsOfCurrentPhone.id
+            ? (
+              <>
+                {
+                  phones
+                    .filter(phone => phone.id === id)
+                    .map(phone => (
+                      <Phone
+                        id={id}
+                        phone={phone}
+                        key={phone.id}
+                        detailsOfCurrentPhone={detailsOfCurrentPhone}
+                      />
+                    ))
+                }
+              </>
+            )
+            : <NoSuchPhone />
+        }
+      </main>
+    );
+  }
+
+  return (
+    <main className="wrapper__main">
+      <NoSuchPhone />
+    </main>
+  );
+};
 
 LoaderForPhone.propTypes = {
   id: PropTypes.string.isRequired,
