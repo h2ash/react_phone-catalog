@@ -15,7 +15,7 @@ import Navbar from './components/Navbar/Navbar';
 import Index from './pages/index';
 import LoaderOfPhones from './pages/phones/loaderOfPhones';
 import Page404 from './pages/Page404/Page404';
-import LoaderForPhone from './pages/phone/loaderForPhone';
+import LoaderForPhoneHook from './pages/phone/loaderForPhoneHook';
 import Basket from './pages/basket/basket';
 import Footer from './components/Footer/Footer';
 import Rights from './pages/rights/rights';
@@ -59,7 +59,7 @@ const App = ({
         <Route
           path="/phones/:id?"
           render={({ match }) => (
-            <LoaderForPhone
+            <LoaderForPhoneHook
               id={match.params.id}
               phones={loadedPhones}
               getPhonesThunk={getPhonesThunk}

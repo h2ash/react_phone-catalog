@@ -50,7 +50,6 @@ const Phones = ({
   const querySort = params.get('sort');
   const queryCurpage = params.get('curpage');
   const queryPerpage = params.get('perpage');
-  
 
   useEffect(() => {
     setSortedReceivedPhones(
