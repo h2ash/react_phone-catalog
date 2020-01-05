@@ -34,7 +34,7 @@ const App = ({
     if (itemsFromBasketInLocal !== null) {
       phonesFromStorage(itemsFromBasketInLocal);
     }
-  }, []);
+  }, [phonesFromStorage]);
 
   return (
     <div className="app">
@@ -43,7 +43,7 @@ const App = ({
       <Switch>
         <Route path="/" exact component={Index} />
         <Route
-          path=""
+          path="/phones"
           exact
           render={({ location, history }) => (
             <LoaderOfPhones

@@ -28,7 +28,6 @@ const Phones = ({
   addItemToBasketThunk,
   phones,
 }) => {
-  console.log(history);
   const [sortedReceivedPhones, setSortedReceivedPhones] = useState(phones);
   const [phonesForShowing, setPhonesForShowing] = useState(phones);
   const [sortBy, setSortBy] = useState('age');
@@ -47,20 +46,25 @@ const Phones = ({
   ] = useState((page * phonesPerPage) - 1);
 
   const params = new URLSearchParams(location.search);
+  const queryFilter = params.get('filter');
+  const querySort = params.get('sort');
+  const queryCurpage = params.get('curpage');
+  const queryPerpage = params.get('perpage');
+  
 
   useEffect(() => {
     setSortedReceivedPhones(
       sortArrayByValue(phones, sortBy)
     );
-  }, [sortBy]);
+  }, [sortBy, phones]);
 
   useEffect(() => {
-    if (params.get('filter') !== null) {
+    if (queryFilter !== null) {
       const phonesToSet = sortedReceivedPhones.filter(phone => phone.id
-        .toLowerCase().includes(params.get('filter').toLowerCase()));
+        .toLowerCase().includes(queryFilter.toLowerCase()));
 
       setPhonesForShowing(phonesToSet);
-      setInputValue(params.get('filter'));
+      setInputValue(queryFilter);
       setPages(Math.ceil(phonesToSet.length / phonesPerPage));
     } else {
       setPhonesForShowing(sortedReceivedPhones);
@@ -68,31 +72,31 @@ const Phones = ({
       setInputValue('');
       setPage(1);
     }
-  }, [params.get('filter'), sortedReceivedPhones, phonesPerPage]);
+  }, [queryFilter, sortedReceivedPhones, phonesPerPage]);
 
   useEffect(() => {
-    if (params.get('sort') !== null) {
+    if (querySort !== null) {
       setPhonesForShowing(
-        sortArrayByValue(phonesForShowing, params.get('sort'))
+        sortArrayByValue(phonesForShowing, querySort)
       );
-      setSortBy(params.get('sort'), phonesForShowing);
+      setSortBy(querySort, phonesForShowing);
     }
-  }, [params.get('sort')]);
+  }, [querySort, phonesForShowing]);
 
   useEffect(() => {
-    if (params.get('perpage') !== null) {
-      setPhonesPerPage(Number(params.get('perpage')));
+    if (queryPerpage !== null) {
+      setPhonesPerPage(Number(queryPerpage));
       setPages(
-        Math.ceil(phonesForShowing.length / Number(params.get('perpage')))
+        Math.ceil(phonesForShowing.length / Number(queryPerpage))
       );
     }
-  }, [params.get('perpage'), phonesForShowing]);
+  }, [queryPerpage, phonesForShowing]);
 
   useEffect(() => {
-    if (params.get('curpage') !== null) {
-      setPage(Number(params.get('curpage')));
+    if (queryCurpage !== null) {
+      setPage(Number(queryCurpage));
     }
-  }, [params.get('curpage')]);
+  }, [queryCurpage]);
 
   useEffect(() => {
     setArrOfPages(calcArrayOfPages(pages));
