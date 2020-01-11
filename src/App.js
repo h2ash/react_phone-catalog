@@ -12,13 +12,13 @@ import {
   getPhonesThunk,
 } from './redux/actions/actionsCreator';
 import Navbar from './components/Navbar/Navbar';
-import Index from './pages/index';
-import LoaderOfPhones from './pages/phones/loaderOfPhones';
-import Page404 from './pages/Page404/Page404';
-import LoaderForPhone from './pages/phone/loaderForPhone';
-import Basket from './pages/basket/basket';
+import Home from './components/Home/Home';
+import LoaderOfPhones from './containers/Phones/LoaderOfPhones';
+import Page404 from './components/Page404/Page404';
+import LoaderForPhone from './containers/Phone/LoaderForPhone';
+import Basket from './containers/Basket/Basket';
 import Footer from './components/Footer/Footer';
-import Rights from './pages/rights/rights';
+import Rights from './components/Rights/Rights';
 
 const App = ({
   loadingStatus,
@@ -41,7 +41,7 @@ const App = ({
       <Navbar />
 
       <Switch>
-        <Route path="/" exact component={Index} />
+        <Route path="/" exact component={Home} />
         <Route
           path="/phones"
           exact

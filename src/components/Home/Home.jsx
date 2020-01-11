@@ -3,7 +3,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { GIT_HUB_H2ASH } from '../../lib/constants';
 
-const Index = () => (
+const Home = () => (
   <main className="wrapper__main wrapper__main--home home">
     <section className="home__section">
       <h1 className="heading heading--xl home__heading">Welcome to phone shop!</h1>
@@ -30,4 +30,4 @@ const Index = () => (
   </main>
 );
 
-export default Index;
+export default Home;

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Loader from '../../components/Loader/Loader';
-import Phone from './phone';
+import Phone from './Phone';
 import { BASE_URL } from '../../lib/constants';
-import NoSuchPhone from '../NoSuchPhone/NoSuchPhone';
+import NoSuchPhone from '../../components/NoSuchPhone/NoSuchPhone';
 
 const LoaderForPhone = ({ getPhonesThunk, id, phones }) => {
   const [detailsOfCurrentPhone, setDetailsOfCurrentPhone] = useState({});

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { clearBasketThunk } from '../../redux/actions/actionsCreator';
-import PhoneInBasket from '../../components/PhoneInBasket/PhoneInBasket';
+import PhoneInBasket from '../PhoneInBasket/PhoneInBasket';
 
 const Basket = ({
   itemsInBasket,

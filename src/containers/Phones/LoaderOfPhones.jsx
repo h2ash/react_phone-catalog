@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 import Loader from '../../components/Loader/Loader';
-import Phones from './phones';
+import Phones from './Phones';
 
 const LoaderOfPhones = ({
   phones,

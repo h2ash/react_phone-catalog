@@ -5,18 +5,18 @@
 @import "heading";
 @import "../components/Navbar/header";
 @import "link";
-@import "../pages/index/home";
+@import "../components/Home/home";
 @import "../components/Loader/loader";
 @import "../components/Footer/footer";
-@import "../pages/basket/basket";
-@import "../components/PhoneInBasket/phoneInBasket";
-@import "../pages/phones/phones";
-@import "../pages/NoSuchPhone/no-such-phone";
-@import "../pages/phone/phone";
-@import "../pages/phones/phone-card";
+@import "../containers/basket/basket";
+@import "../containers/PhoneInBasket/phoneInBasket";
+@import "../containers/Phones/phones";
+@import "../components/NoSuchPhone/no-such-phone";
+@import "../containers/Phone/phone";
+@import "../containers/Phones/phone-card";
 @import "../components/Pagination/pagination";
-@import "../pages/Page404/page404";
-@import "../pages/rights/rights";
+@import "../components/Page404/page404";
+@import "../components/Rights/rights";
 @import "media";
 
 .app {
