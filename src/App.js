@@ -66,13 +66,8 @@ const App = ({
             />
           )}
         />
-        <Route
-          path="/basket"
-          render={() => (
-            <Basket />
-          )}
-        />
-        <Route path="/rights" exact render={() => <Rights />} />
+        <Route path="/basket" component={Basket} />
+        <Route path="/rights" exact component={Rights} />
         <Route component={Page404} />
       </Switch>
 
