@@ -1,35 +1,38 @@
 import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+import {
+  getPhonesThunk,
+} from '../../redux/actions/actionsCreator';
 import Loader from '../../components/Loader/Loader';
 import Phones from './Phones';
 
 const LoaderOfPhones = ({
-  phones,
-  isLoading,
-  isLoaded,
   location,
   history,
-  getPhonesThunk,
 }) => {
+  const dispatch = useDispatch();
+  const phones = useSelector(state => state.loadedPhones);
+  const loadingStatus = useSelector(state => state.loadingStatus);
+
   useEffect(() => {
-    getPhonesThunk();
-  }, [getPhonesThunk]);
+    dispatch(getPhonesThunk());
+  }, []);
 
   return (
     <main className="wrapper__main">
       {
-        isLoaded
+        loadingStatus.isLoaded
           ? (
             <Phones
               phones={phones}
               location={location}
               history={history}
-
             />
           )
           : (
             <Loader
-              isLoading={isLoading}
+              isLoading={loadingStatus.isLoading}
             />
           )
       }
@@ -38,16 +41,6 @@ const LoaderOfPhones = ({
 };
 
 LoaderOfPhones.propTypes = {
-  getPhonesThunk: PropTypes.func.isRequired,
-  isLoading: PropTypes.bool.isRequired,
-  isLoaded: PropTypes.bool.isRequired,
-  phones: PropTypes.arrayOf(PropTypes.shape({
-    age: PropTypes.number,
-    id: PropTypes.string,
-    imageURL: PropTypes.string,
-    name: PropTypes.string,
-    snippet: PropTypes.string,
-  })).isRequired,
   history: PropTypes.shape({
     push: PropTypes.func,
   }).isRequired,

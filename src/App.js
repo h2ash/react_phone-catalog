@@ -1,14 +1,14 @@
 /* eslint-disable no-shadow */
 import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import './styles/app.scss';
 import {
   Route,
   Switch,
 } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { PHONES_FROM_STORAGE } from './lib/constants';
 import {
-  phonesFromStorage,
   getPhonesThunk,
 } from './redux/actions/actionsCreator';
 import Navbar from './components/Navbar/Navbar';
@@ -20,21 +20,19 @@ import Basket from './containers/Basket/Basket';
 import Footer from './components/Footer/Footer';
 import Rights from './components/Rights/Rights';
 
-const App = ({
-  loadingStatus,
-  loadedPhones,
-  phonesFromStorage,
-  getPhonesThunk,
-}) => {
+const App = () => {
+  const dispatch = useDispatch();
+  const loadedPhones = useSelector(state => state.loadedPhones);
+
   useEffect(() => {
     const itemsFromBasketInLocal = JSON.parse(
       localStorage.getItem('itemsFromBasketInLocal')
     );
 
     if (itemsFromBasketInLocal !== null) {
-      phonesFromStorage(itemsFromBasketInLocal);
+      dispatch({ type: PHONES_FROM_STORAGE, payload: itemsFromBasketInLocal });
     }
-  }, [phonesFromStorage]);
+  }, []);
 
   return (
     <div className="app">
@@ -47,10 +45,6 @@ const App = ({
           exact
           render={({ location, history }) => (
             <LoaderOfPhones
-              getPhonesThunk={getPhonesThunk}
-              phones={loadedPhones}
-              isLoading={loadingStatus.isLoading}
-              isLoaded={loadingStatus.isLoaded}
               location={location}
               history={history}
             />
@@ -92,13 +86,4 @@ App.propTypes = {
   }).isRequired,
 };
 
-export default connect(({
-  loadingStatus,
-  loadedPhones,
-}) => ({
-  loadingStatus,
-  loadedPhones,
-}), {
-  phonesFromStorage,
-  getPhonesThunk,
-})(App);
+export default App;

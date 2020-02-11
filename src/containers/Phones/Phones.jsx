@@ -3,7 +3,7 @@ import {
   Link,
 } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   addItemToBasketThunk,
 } from '../../redux/actions/actionsCreator';
@@ -16,11 +16,10 @@ import PaginationInfo from '../../components/Pagination/PaginationInfo';
 const Phones = ({
   location,
   history,
-  itemsInBasket,
-  // eslint-disable-next-line no-shadow
-  addItemToBasketThunk,
   phones,
 }) => {
+  const dispatch = useDispatch();
+  const itemsInBasket = useSelector(state => state.itemsInBasket);
   const [sortedReceivedPhones, setSortedReceivedPhones] = useState(phones);
   const [phonesForShowing, setPhonesForShowing] = useState(phones);
   const [sortBy, setSortBy] = useState('age');
@@ -220,7 +219,7 @@ const Phones = ({
                 .find(item => item.id === phone.id)
                     && 'button--add-in-basket_added'}`
                   }
-                  onClick={() => addItemToBasketThunk(phone)}
+                  onClick={() => dispatch(addItemToBasketThunk(phone))}
                 >
                   {itemsInBasket.find(item => item.id === phone.id)
                     ? 'Added to basket'
@@ -271,20 +270,6 @@ Phones.propTypes = {
     name: PropTypes.string,
     snippet: PropTypes.string,
   })).isRequired,
-  addItemToBasketThunk: PropTypes.func.isRequired,
-  itemsInBasket: PropTypes.arrayOf(PropTypes.shape({
-    age: PropTypes.number,
-    id: PropTypes.string,
-    imageURL: PropTypes.string,
-    name: PropTypes.string,
-    snippet: PropTypes.string,
-  })).isRequired,
 };
 
-export default connect(({
-  itemsInBasket,
-}) => ({
-  itemsInBasket,
-}), ({
-  addItemToBasketThunk,
-}))(Phones);
+export default Phones;
