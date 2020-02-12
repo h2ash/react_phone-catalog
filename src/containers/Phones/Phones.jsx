@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Link,
+  Link, useLocation, useHistory,
 } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
@@ -13,12 +13,10 @@ import { BASE_URL } from '../../lib/constants';
 import PaginationButtons from '../../components/Pagination/PaginationButtons';
 import PaginationInfo from '../../components/Pagination/PaginationInfo';
 
-const Phones = ({
-  location,
-  history,
-  phones,
-}) => {
+const Phones = ({ phones }) => {
   const dispatch = useDispatch();
+  const location = useLocation();
+  const history = useHistory();
   const itemsInBasket = useSelector(state => state.itemsInBasket);
   const [sortedReceivedPhones, setSortedReceivedPhones] = useState(phones);
   const [phonesForShowing, setPhonesForShowing] = useState(phones);
@@ -257,12 +255,6 @@ const Phones = ({
 
 Phones.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
-  history: PropTypes.object.isRequired,
-  location: PropTypes.shape({
-    hash: PropTypes.string,
-    pathname: PropTypes.string,
-    search: PropTypes.string,
-  }).isRequired,
   phones: PropTypes.arrayOf(PropTypes.shape({
     age: PropTypes.number,
     id: PropTypes.string,

@@ -35,16 +35,7 @@ const App = () => {
 
       <Switch>
         <Route path="/" exact component={Home} />
-        <Route
-          path="/phones"
-          exact
-          render={({ location, history }) => (
-            <LoaderOfPhones
-              location={location}
-              history={history}
-            />
-          )}
-        />
+        <Route path="/phones" exact><LoaderOfPhones /></Route>
         <Route path="/phones/:id?"><LoaderForPhone /></Route>
         <Route path="/basket" component={Basket} />
         <Route path="/rights" exact component={Rights} />

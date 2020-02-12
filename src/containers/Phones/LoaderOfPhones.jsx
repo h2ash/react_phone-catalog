@@ -1,16 +1,12 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import {
   getPhonesThunk,
 } from '../../redux/actions/actionsCreator';
 import Loader from '../../components/Loader/Loader';
 import Phones from './Phones';
 
-const LoaderOfPhones = ({
-  location,
-  history,
-}) => {
+const LoaderOfPhones = () => {
   const dispatch = useDispatch();
   const phones = useSelector(state => state.loadedPhones);
   const loadingStatus = useSelector(state => state.loadingStatus);
@@ -26,8 +22,6 @@ const LoaderOfPhones = ({
           ? (
             <Phones
               phones={phones}
-              location={location}
-              history={history}
             />
           )
           : (
@@ -38,15 +32,6 @@ const LoaderOfPhones = ({
       }
     </main>
   );
-};
-
-LoaderOfPhones.propTypes = {
-  history: PropTypes.shape({
-    push: PropTypes.func,
-  }).isRequired,
-  location: PropTypes.shape({
-    search: PropTypes.string,
-  }).isRequired,
 };
 
 export default LoaderOfPhones;
