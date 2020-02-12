@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
+import { useParams } from 'react-router-dom';
 import Loader from '../../components/Loader/Loader';
 import Phone from './Phone';
 import { BASE_URL } from '../../lib/constants';
 import NoSuchPhone from '../../components/NoSuchPhone/NoSuchPhone';
 import { getPhonesThunk } from '../../redux/actions/actionsCreator';
 
-const LoaderForPhone = ({ id }) => {
+const LoaderForPhone = () => {
+  const params = useParams();
   const dispatch = useDispatch();
   const phones = useSelector(state => state.loadedPhones);
   const [detailsOfCurrentPhone, setDetailsOfCurrentPhone] = useState({});
@@ -16,8 +17,8 @@ const LoaderForPhone = ({ id }) => {
 
   useEffect(() => {
     dispatch(getPhonesThunk());
-    loadDataDetails(id);
-  }, [dispatch, id]);
+    loadDataDetails(params.id);
+  }, [dispatch, params.id]);
 
   const loadDataDetails = async(currentId) => {
     setIsLoading(true);
@@ -49,15 +50,15 @@ const LoaderForPhone = ({ id }) => {
     return (
       <main className="wrapper__main">
         {
-          id === detailsOfCurrentPhone.id
+          params.id === detailsOfCurrentPhone.id
             ? (
               <>
                 {
                   phones
-                    .filter(phone => phone.id === id)
+                    .filter(phone => phone.id === params.id)
                     .map(phone => (
                       <Phone
-                        id={id}
+                        id={params.id}
                         phone={phone}
                         key={phone.id}
                         detailsOfCurrentPhone={detailsOfCurrentPhone}
@@ -77,10 +78,6 @@ const LoaderForPhone = ({ id }) => {
       <NoSuchPhone />
     </main>
   );
-};
-
-LoaderForPhone.propTypes = {
-  id: PropTypes.string.isRequired,
 };
 
 export default LoaderForPhone;

@@ -45,12 +45,7 @@ const App = () => {
             />
           )}
         />
-        <Route
-          path="/phones/:id?"
-          render={({ match }) => (
-            <LoaderForPhone id={match.params.id} />
-          )}
-        />
+        <Route path="/phones/:id?"><LoaderForPhone /></Route>
         <Route path="/basket" component={Basket} />
         <Route path="/rights" exact component={Rights} />
         <Route component={Page404} />
