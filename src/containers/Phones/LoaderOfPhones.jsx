@@ -17,7 +17,7 @@ const LoaderOfPhones = ({
 
   useEffect(() => {
     dispatch(getPhonesThunk());
-  }, []);
+  }, [dispatch]);
 
   return (
     <main className="wrapper__main">

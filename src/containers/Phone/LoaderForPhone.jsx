@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Loader from '../../components/Loader/Loader';
 import Phone from './Phone';
 import { BASE_URL } from '../../lib/constants';
 import NoSuchPhone from '../../components/NoSuchPhone/NoSuchPhone';
+import { getPhonesThunk } from '../../redux/actions/actionsCreator';
 
-const LoaderForPhone = ({ getPhonesThunk, id, phones }) => {
+const LoaderForPhone = ({ id }) => {
+  const dispatch = useDispatch();
+  const phones = useSelector(state => state.loadedPhones);
   const [detailsOfCurrentPhone, setDetailsOfCurrentPhone] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [isLoaded, setIsLoaded] = useState(true);
 
   useEffect(() => {
-    getPhonesThunk();
+    dispatch(getPhonesThunk());
     loadDataDetails(id);
-  }, [getPhonesThunk, id]);
+  }, [dispatch, id]);
 
   const loadDataDetails = async(currentId) => {
     setIsLoading(true);
@@ -77,8 +81,6 @@ const LoaderForPhone = ({ getPhonesThunk, id, phones }) => {
 
 LoaderForPhone.propTypes = {
   id: PropTypes.string.isRequired,
-  phones: PropTypes.arrayOf(PropTypes.object).isRequired,
-  getPhonesThunk: PropTypes.func.isRequired,
 };
 
 export default LoaderForPhone;
