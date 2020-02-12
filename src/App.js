@@ -6,7 +6,7 @@ import {
   Route,
   Switch,
 } from 'react-router-dom';
-import { PHONES_FROM_STORAGE } from './lib/constants';
+import { phonesFromStorage } from './redux/actions/actionsCreator';
 import Navbar from './components/Navbar/Navbar';
 import Home from './components/Home/Home';
 import LoaderOfPhones from './containers/Phones/LoaderOfPhones';
@@ -25,7 +25,7 @@ const App = () => {
     );
 
     if (itemsFromBasketInLocal !== null) {
-      dispatch({ type: PHONES_FROM_STORAGE, payload: itemsFromBasketInLocal });
+      dispatch(phonesFromStorage(itemsFromBasketInLocal));
     }
   }, [dispatch]);
 

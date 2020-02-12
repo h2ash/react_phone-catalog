@@ -11,7 +11,7 @@ import {
 export const itemsInBasket = (state = [], action) => {
   switch (action.type) {
     case PHONES_FROM_STORAGE:
-      return action.payload;
+      return action.phones;
     case ADD_ITEM_TO_BASKET:
       return action.arrayToReplace;
     case INCREASE_QUANTITY_IN_BASKET:

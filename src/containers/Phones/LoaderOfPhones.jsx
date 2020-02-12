@@ -8,7 +8,6 @@ import Phones from './Phones';
 
 const LoaderOfPhones = () => {
   const dispatch = useDispatch();
-  const phones = useSelector(state => state.loadedPhones);
   const loadingStatus = useSelector(state => state.loadingStatus);
 
   useEffect(() => {
@@ -20,9 +19,7 @@ const LoaderOfPhones = () => {
       {
         loadingStatus.isLoaded
           ? (
-            <Phones
-              phones={phones}
-            />
+            <Phones />
           )
           : (
             <Loader
