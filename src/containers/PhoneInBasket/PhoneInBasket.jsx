@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { BASE_URL } from '../../lib/constants';
 import {
   increaseItemInBasketThunk,
@@ -11,22 +11,16 @@ import {
   deleteItemFromBasketThunk,
 } from '../../redux/actions/actionsCreator';
 
-const PhoneInBasket = ({
-  item,
-  increaseItemInBasketThunk,
-  decreaseItemInBasketThunk,
-  deleteItemFromBasketThunk,
-}) => {
+const PhoneInBasket = ({ item }) => {
   const checkDisabledOrActive = classNames({
     'button--decrease-increase-disabled': item.quantity <= 1,
     'button--decrease-increase-active': item.quantity > 1,
   });
 
+  const dispatch = useDispatch();
+
   return (
-    <li
-      className="basket-card"
-      key={item.id}
-    >
+    <li className="basket-card" key={item.id}>
       <div className="basket-card__img-and-name-container">
         <div className="basket-card__img-container">
           <Link to={`/phones/${item.id}`}>
@@ -48,7 +42,7 @@ const PhoneInBasket = ({
       </div>
       <div className="basket-card__buttons-container">
         <button
-          onClick={() => decreaseItemInBasketThunk(item.id)}
+          onClick={() => dispatch(decreaseItemInBasketThunk(item.id))}
           className={`
             button button--decrease-increase 
             ${checkDisabledOrActive}`}
@@ -58,7 +52,7 @@ const PhoneInBasket = ({
         </button>
         <p className="basket-card__quantity-of-phone">{item.quantity}</p>
         <button
-          onClick={() => increaseItemInBasketThunk(item.id)}
+          onClick={() => dispatch(increaseItemInBasketThunk(item.id))}
           className="
             basket-card__increase-button
             button
@@ -69,7 +63,7 @@ const PhoneInBasket = ({
           +
         </button>
         <button
-          onClick={() => deleteItemFromBasketThunk(item.id)}
+          onClick={() => dispatch(deleteItemFromBasketThunk(item.id))}
           className="button button--remove"
           type="button"
         >
@@ -88,17 +82,6 @@ PhoneInBasket.propTypes = {
     name: PropTypes.string,
     snippet: PropTypes.string,
   }).isRequired,
-  increaseItemInBasketThunk: PropTypes.func.isRequired,
-  decreaseItemInBasketThunk: PropTypes.func.isRequired,
-  deleteItemFromBasketThunk: PropTypes.func.isRequired,
 };
 
-export default connect(({
-  itemsInBasket,
-}) => ({
-  itemsInBasket,
-}), {
-  increaseItemInBasketThunk,
-  decreaseItemInBasketThunk,
-  deleteItemFromBasketThunk,
-})(PhoneInBasket);
+export default PhoneInBasket;
